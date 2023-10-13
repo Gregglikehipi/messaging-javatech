@@ -16,11 +16,11 @@ public class MessagingRabbitmqApplication {
 
 	static final String topicExchangeName = "spring-boot-exchange";
 
-	static final String queueName = "spring-boot";
+	static String queueName = Help.queue();
 
 	@Bean
 	Queue queue() {
-		return new Queue(queueName, false);
+		return new Queue(queueName, false, true, true);
 	}
 
 	@Bean
@@ -29,13 +29,12 @@ public class MessagingRabbitmqApplication {
 	}
 
 	@Bean
-	Binding binding(Queue queue, TopicExchange exchange) {
-		return BindingBuilder.bind(queue).to(exchange).with("foo.bar.#");
+	Binding binding(Queue autoDeleteQueue1, TopicExchange exchange) {
+		return BindingBuilder.bind(autoDeleteQueue1).to(exchange).with("foo.bar.baz");
 	}
 
 	@Bean
-	SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
-			MessageListenerAdapter listenerAdapter) {
+	SimpleMessageListenerContainer container(ConnectionFactory connectionFactory, MessageListenerAdapter listenerAdapter) {
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setConnectionFactory(connectionFactory);
 		container.setQueueNames(queueName);
@@ -49,7 +48,8 @@ public class MessagingRabbitmqApplication {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		SpringApplication.run(MessagingRabbitmqApplication.class, args).close();
+		SpringApplication.run(MessagingRabbitmqApplication.class, args);
+
 	}
 
 }
