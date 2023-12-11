@@ -1,9 +1,6 @@
 package com.example.messagingrabbitmq;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
@@ -14,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class MessagingRabbitmqApplication {
 
-	static final String topicExchangeName = "spring-boot-exchange";
+	static final String fanoutExchangeName = "spring-boot-exchange";
 
 	static String queueName = Help.queue();
 
@@ -24,13 +21,13 @@ public class MessagingRabbitmqApplication {
 	}
 
 	@Bean
-	TopicExchange exchange() {
-		return new TopicExchange(topicExchangeName);
+	FanoutExchange exchange() {
+		return new FanoutExchange(fanoutExchangeName);
 	}
 
 	@Bean
-	Binding binding(Queue autoDeleteQueue1, TopicExchange exchange) {
-		return BindingBuilder.bind(autoDeleteQueue1).to(exchange).with("foo.bar.baz");
+	Binding binding(Queue autoDeleteQueue1, FanoutExchange exchange) {
+		return BindingBuilder.bind(autoDeleteQueue1).to(exchange);
 	}
 
 	@Bean

@@ -24,7 +24,7 @@ public class Runner implements CommandLineRunner {
 		while (true) {
 			System.out.println("Enter message:");
 			String message = scanner.next();
-			rabbitTemplate.convertAndSend(MessagingRabbitmqApplication.topicExchangeName, "foo.bar.baz", message);
+			rabbitTemplate.convertAndSend(MessagingRabbitmqApplication.fanoutExchangeName, "", message);
 			receiver.getLatch().await(10000, TimeUnit.MILLISECONDS);
 		}
 	}
